@@ -31,7 +31,7 @@ update(_, I, J, NewI, NewJ):-
 update_up(I,J, NewI, NewJ) :- NewI is I - 1, NewJ is J.
 update_down(I,J,NewI, NewJ) :- NewI is I + 1, NewJ is J.
 update_left(I,J,NewI,NewJ) :- NewI is I, NewJ is J - 1.
-update_right(I,J,NewI, NewJ) :- NewI is I, New is J + 1.
+update_right(I,J,NewI, NewJ) :- NewI is I, NewJ is J + 1.
 
 sumUp(W, 1, J, _, Sum, Res) :- Res is Sum.
 sumUp(W, _, _, 0, Sum, Res):- Res is Sum.
@@ -61,7 +61,7 @@ sum(W, I, J, R) :- sumUp(W, I, J, 2, 0, ResUp),
 add_all(0, 0, 0, 0, Sol) :- Sol is 1.
 add_all(Up, Down, 0, 0, Sol) :- Sol is Up + Down + 1.
 add_all(0,0, Left,Right, Sol) :- Sol is Left + Right + 1.
-add_all(Up,Down,Left,Right) :- Sol is Left+Right + Up + Down + 2.   
+add_all(Up,Down,Left,Right, Sol) :- Sol is Left + Right + Up + Down + 2.   
 			
 			
 
@@ -165,9 +165,9 @@ wall(X):- X = [[blue: 0, yellow: 0, red:   0, black: 0, white: 0],
 
 wall1(X):- X = [[blue: 0, yellow: 0, red:   1, black: 0, white: 0],
 	      [white: 0, blue:   0, yellow:1, red:   0, black: 0],
-	      [black: 0, white:  0, blue:  0, yellow:0, red:   0],
+	      [black: 0, white:  0, blue:  0, yellow:1, red:   0],
 	      [red:   0, black:  0, white: 0, blue:  0, yellow:0],
-	      [yellow:0, red:    0, black: 0, white: 0, blue:  0]].
+	      [yellow:0, red:    0, black: 0, white: 1, blue:  1]].
 
 
 % randomiza las 100 piezas del juego
