@@ -28,7 +28,46 @@ update(_, I, J, NewI, NewJ):-
 	NewI is I,
 	NewJ is J + 1.
 
-% imprime la matriz cuadrada M de tamaño N
+update_up(I,J, NewI, NewJ) :- NewI is I - 1, NewJ is J.
+update_down(I,J,NewI, NewJ) :- NewI is I + 1, NewJ is J.
+update_left(I,J,NewI,NewJ) :- NewI is I, NewJ is J - 1.
+update_right(I,J,NewI, NewJ) :- NewI is I, New is J + 1.
+
+sumUp(W, 1, J, _, Sum, Res) :- Res is Sum.
+sumUp(W, _, _, 0, Sum, Res):- Res is Sum.
+sumUp(W, I, J,NewValue, Sum, Res) :- update_up(I,J,NewI,NewJ),indexer(W, NewI, NewJ, Brick: Value ), sumUp(W, NewI,NewJ, Value, Sum + Value, Res).
+
+sumDown(W, 5, J, _, Sum, Res) :- Res is Sum.
+sumDown(W, _, _, 0, Sum, Res):- Res is Sum.
+sumDown(W, I, J,NewValue, Sum, Res) :- update_down(I,J,NewI,NewJ),indexer(W, NewI, NewJ, Brick: Value ), sumDown(W, NewI,NewJ, Value, Sum + Value, Res).
+
+sumLeft(W, I, 1, _, Sum, Res) :- Res is Sum.
+sumLeft(W, _, _, 0, Sum, Res):- Res is Sum.
+sumLeft(W, I, J,NewValue, Sum, Res) :- update_left(I,J,NewI,NewJ),indexer(W, NewI, NewJ, Brick: Value ), sumLeft(W, NewI,NewJ, Value, Sum + Value, Res).
+
+sumRight(W, I, 5, _, Sum, Res) :- Res is Sum.
+sumRight(W, _, _, 0, Sum, Res):- Res is Sum.
+sumRight(W, I, J,NewValue, Sum, Res) :- update_right(I,J,NewI,NewJ),indexer(W, NewI, NewJ, Brick: Value ), sumRight(W, NewI,NewJ, Value, Sum + Value, Res).
+
+
+
+sum(W, I, J, R) :- sumUp(W, I, J, 2, 0, ResUp),
+	sumDown(W, I, J, 2, 0, ResD),
+	sumLeft(W, I, J, 2, 0, ResL),
+	sumRight(W, I, J, 2,0, ResR),
+	add_all(ResUp,ResD,ResL,ResR, Sol),
+	R is Sol.
+
+add_all(0, 0, 0, 0, Sol) :- Sol is 1.
+add_all(Up, Down, 0, 0, Sol) :- Sol is Up + Down + 1.
+add_all(0,0, Left,Right, Sol) :- Sol is Left + Right + 1.
+add_all(Up,Down,Left,Right) :- Sol is Left+Right + Up + Down + 2.   
+			
+			
+
+
+
+% imprime la matriz cuadrada M de tamaï¿½o N
 printMatrix(M, N) :-
 	MAX is N * N,
 	pMatrix(M, 1, 1, MAX, N).
@@ -53,7 +92,7 @@ setAtIndex(1, E, [_|Y], [E|Y]).
 setAtIndex(I, E, [X|Y], [X|R]) :- K is I-1, setAtIndex(K, E, Y, R).
 
 % makeRepos(2, 3, [1, 2, 3, 4, 5, 6], [[1, 2, 3], [4, 5, 6]])
-% crea N repositorios de tamaño M de losas de la coleccion S
+% crea N repositorios de tamaï¿½o M de losas de la coleccion S
 makeRepos(0, _, _, []).
 makeRepos(N, M, S, [X|Y]):-
 	K is N - 1,
@@ -64,20 +103,20 @@ makeRepos(N, M, S, [X|Y]):-
 init(N):- (N =:= 2 -> init2) ; (N =:= 3 -> init3) ; init4.
 
 init2 :- wall(W1),
-	 wall(W2),
-	 stair(S1),
-	 stair(S2),
-	 shuffle(Bag),
-	 play([[W1, S1, 0], [W2, S2, 0]], Bag, 5).
+	wall(W2),
+	stair(S1),
+	stair(S2),
+	shuffle(Bag),
+	play([[W1, S1, 0], [W2, S2, 0]], Bag, 5).
 
 init3 :- wall(W1),
-	 wall(W2),
-	 wall(W3),
-	 stair(S1),
-	 stair(S2),
-	 stair(S3),
-	 shuffle(Bag),
-	 play([[W1, S1, 0], [W2, S2, 0], [W3, S3, 0]], Bag, 7).
+	wall(W2),
+	wall(W3),
+	stair(S1),
+	stair(S2),
+	stair(S3),
+	shuffle(Bag),
+	play([[W1, S1, 0], [W2, S2, 0], [W3, S3, 0]], Bag, 7).
 
 init4 :- wall(W1),
 	 wall(W2),
@@ -119,6 +158,13 @@ stair(X):- X = [[empty],
 
 wall(X):- X = [[blue: 0, yellow: 0, red:   0, black: 0, white: 0],
 	      [white: 0, blue:   0, yellow:0, red:   0, black: 0],
+	      [black: 0, white:  0, blue:  0, yellow:0, red:   0],
+	      [red:   0, black:  0, white: 0, blue:  0, yellow:0],
+	      [yellow:0, red:    0, black: 0, white: 0, blue:  0]].
+
+
+wall1(X):- X = [[blue: 0, yellow: 0, red:   1, black: 0, white: 0],
+	      [white: 0, blue:   0, yellow:1, red:   0, black: 0],
 	      [black: 0, white:  0, blue:  0, yellow:0, red:   0],
 	      [red:   0, black:  0, white: 0, blue:  0, yellow:0],
 	      [yellow:0, red:    0, black: 0, white: 0, blue:  0]].
